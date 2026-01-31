@@ -1,0 +1,3526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | ProManage</title>
+    <link rel="stylesheet" href="icons/fontawesome-free-7.0.1-web/css/all.min.css">
+   
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Language Switcher */
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 50px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .lang-btn {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: #4361ee;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .lang-btn.active {
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(67, 97, 238, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .admin-avatar {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .admin-details h1 {
+            font-size: 32px;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .admin-details p {
+            color: #64748b;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-details p:before {
+            content: "•";
+            color: #4361ee;
+            font-size: 20px;
+        }
+
+        .stats-overview {
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            color: white;
+            padding: 25px 35px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+            min-width: 220px;
+        }
+
+        .stats-overview h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .stats-count {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-label {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 35px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 18px 20px;
+            border: none;
+            background: #f8fafc;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .tab-btn:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn i {
+            font-size: 20px;
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            display: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+        }
+
+        .section-header h2 i {
+            color: #4361ee;
+            font-size: 28px;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        }
+
+        th {
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+            color: #475569;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .badge-in-progress {
+            background: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+        .badge-completed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .badge-under-review {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .badge-low {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-manager {
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            color: white;
+            box-shadow: 0 2px 5px rgba(67, 97, 238, 0.2);
+        }
+
+        .badge-employee {
+            background: linear-gradient(135deg, #f5576c 0%, #e04a5e 100%);
+            color: white;
+            box-shadow: 0 2px 5px rgba(245, 87, 108, 0.2);
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, #10b981 0%, #0da271 100%);
+            color: white;
+            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-btn.view {
+            background: linear-gradient(135deg, #10b981 0%, #0da271 100%);
+            color: white;
+        }
+
+        .action-btn.reassign {
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            color: white;
+        }
+
+        .action-btn.add-task {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .action-btn.download {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        /* Status Update Buttons */
+        .status-update-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .status-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .status-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-btn.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-btn.in-progress {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-btn.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-btn.under-review {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Task Files */
+        .task-files {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-item:hover {
+            background: #e2e8f0;
+            border-color: #4361ee;
+        }
+
+        .file-item i {
+            color: #4361ee;
+        }
+
+        /* Task Description */
+        .task-description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            max-width: 400px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Filter Controls */
+        .filter-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            font-family: 'Poppins';
+            background: white;
+            min-width: 180px;
+            font-size: 14px;
+            color: #475569;
+            transition: all 0.3s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 25px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-header h2 {
+            color: #1e293b;
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: #f1f5f9;
+            color: #4361ee;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .detail-item strong {
+            color: #1e293b;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .detail-item span {
+            color: #475569;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .attachments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .attachment-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attachment-item:hover {
+            border-color: #4361ee;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+        }
+
+        .attachment-icon {
+            font-size: 36px;
+            color: #4361ee;
+            margin-bottom: 5px;
+        }
+
+        .attachment-name {
+            font-size: 14px;
+            color: #1e293b;
+            word-break: break-word;
+            font-weight: 500;
+        }
+
+        .attachment-size {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding: 25px;
+            border-top: 2px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .btn-secondary {
+            padding: 14px 28px;
+            background: #64748b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.25);
+        }
+
+        /* Reassign Modal */
+        .reassign-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #1e293b;
+            font-size: 15px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Poppins';
+            font-size: 14px;
+            color: #475569;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Poppins';
+            resize: vertical;
+            font-size: 14px;
+            color: #475569;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        /* Submitted Work */
+        .submission-info {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .submission-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #64748b;
+            flex-wrap: wrap;
+        }
+
+        .submission-files {
+            margin-top: 20px;
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            position: fixed;
+            bottom: 35px;
+            right: 35px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 22px;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+            transition: all 0.3s;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .language-switcher {
+            right: auto;
+            left: 20px;
+        }
+
+        [dir="rtl"] .logout-btn {
+            right: auto;
+            left: 35px;
+        }
+
+        [dir="rtl"] .header {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .admin-info {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .section-header {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .modal-header {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .modal-footer {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .submission-header {
+            flex-direction: row-reverse;
+        }
+
+        /* New Task Button */
+        .new-task-btn {
+            background: linear-gradient(135deg, #10b981 0%, #0da271 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+
+        .new-task-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        /* New Task Modal - File Upload Section */
+        .file-upload-section {
+            margin: 20px 0;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #e2e8f0;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        .file-upload-area:hover {
+            border-color: #4361ee;
+            background: rgba(67, 97, 238, 0.02);
+        }
+
+        .file-upload-area i {
+            font-size: 48px;
+            color: #4361ee;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .file-upload-text {
+            color: #64748b;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .file-upload-hint {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .file-uploaded-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-uploaded-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .file-uploaded-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .file-uploaded-icon {
+            color: #4361ee;
+            font-size: 18px;
+        }
+
+        .file-uploaded-name {
+            color: #1e293b;
+            font-size: 14px;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .file-uploaded-size {
+            color: #64748b;
+            font-size: 12px;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        .file-remove-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .file-remove-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .header {
+                flex-direction: column;
+                gap: 25px;
+                text-align: center;
+            }
+            
+            .admin-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header, .section {
+                padding: 25px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .modal-footer button {
+                width: 100%;
+            }
+            
+            .language-switcher {
+                flex-direction: column;
+                gap: 8px;
+                padding: 12px;
+                right: 15px;
+                top: 15px;
+            }
+            
+            .lang-btn {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+            
+            .tab-btn {
+                padding: 15px;
+                font-size: 14px;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .stats-overview {
+                min-width: 100%;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header, .section {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+            }
+            
+            .admin-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
+            
+            .admin-details h1 {
+                font-size: 24px;
+            }
+            
+            .stats-overview {
+                padding: 20px;
+            }
+            
+            .stats-count {
+                font-size: 36px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .section-header h2 {
+                justify-content: center;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .new-task-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 18px 28px;
+            background: #1e293b;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 3000;
+            animation: toastSlideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @keyframes toastSlideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .toast.success {
+            background: linear-gradient(135deg, #10b981 0%, #0da271 100%);
+        }
+        
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .toast.warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .toast.info {
+            background: linear-gradient(135deg, #3a86ff 0%, #2667cc 100%);
+        }
+        
+        .toast i {
+            font-size: 22px;
+        }
+
+        [dir="rtl"] .toast {
+            right: auto;
+            left: 30px;
+        }
+
+        @keyframes toastSlideInRTL {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        [dir="rtl"] .toast {
+            animation: toastSlideInRTL 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Check login status first -->
+    <script>
+        // Check if user is logged in as admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!currentUser || currentUser.userType !== 'admin') {
+                // Redirect to login page if not logged in as admin
+                window.location.href = 'index.html';
+                return;
+            }
+        });
+    </script>
+
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <button class="lang-btn active" data-lang="en">🇺🇸 English</button>
+        <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="admin-info">
+                <div class="admin-avatar" id="adminAvatar">A</div>
+                <div class="admin-details">
+                    <h1 id="adminName">Admin Dashboard</h1>
+                    <p id="adminEmail">Loading...</p>
+                </div>
+            </div>
+            <div class="stats-overview">
+                <h3 id="totalTasksTitle">Total Tasks</h3>
+                <div class="stats-count" id="totalTasksCount">0</div>
+                <div class="stats-label" id="tasksInProgress">0 In Progress</div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="all-tasks" onclick="showTab('all-tasks')">
+                <i class="fas fa-tasks"></i>
+                <span id="tabAllTasks">All Tasks</span>
+            </button>
+            <button class="tab-btn" data-tab="submitted-work" onclick="showTab('submitted-work')">
+                <i class="fas fa-paper-plane"></i>
+                <span id="tabSubmittedWork">Submitted Work</span>
+            </button>
+            <button class="tab-btn" data-tab="users" onclick="showTab('users')">
+                <i class="fas fa-users"></i>
+                <span id="tabUsers">All Users</span>
+            </button>
+        </div>
+
+        <!-- All Tasks Section -->
+        <div id="all-tasks" class="section active">
+            <div class="section-header">
+                <h2><i class="fas fa-tasks"></i> <span id="allTasksTitle">All System Tasks</span></h2>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div class="filter-controls">
+                        <select id="taskFilter" onchange="filterAllTasks()" class="filter-select">
+                            <option value="all" id="filterAll">All Tasks</option>
+                            <option value="pending" id="filterPending">Pending</option>
+                            <option value="in-progress" id="filterInProgress">In Progress</option>
+                            <option value="completed" id="filterCompleted">Completed</option>
+                            <option value="under-review" id="filterReview">Under Review</option>
+                        </select>
+                        <select id="userFilter" onchange="filterAllTasks()" class="filter-select">
+                            <option value="all" id="filterAllUsers">All Users</option>
+                        </select>
+                    </div>
+                    <button class="new-task-btn" onclick="openNewTaskModal()">
+                        <i class="fas fa-plus"></i>
+                        <span id="newTaskBtn">New Task</span>
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th id="taskNameHeader">Task Name</th>
+                            <th id="assignedByHeader">Assigned By</th>
+                            <th id="assignedToHeader">Assigned To</th>
+                            <th id="startDateHeader">Start Date</th>
+                            <th id="endDateHeader">End Date</th>
+                            <th id="priorityHeader">Priority</th>
+                            <th id="statusHeader">Status</th>
+                            <th id="actionsHeader">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allTasksTable">
+                        <!-- Tasks will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Submitted Work Section -->
+        <div id="submitted-work" class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-paper-plane"></i> <span id="submittedWorkTitle">Submitted Work</span></h2>
+                <div class="filter-controls">
+                    <select id="submissionFilter" onchange="filterSubmissions()" class="filter-select">
+                        <option value="all" id="filterAllSubmissions">All Submissions</option>
+                        <option value="today" id="filterToday">Today</option>
+                        <option value="week" id="filterWeek">This Week</option>
+                        <option value="month" id="filterMonth">This Month</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th id="submissionTaskHeader">Task</th>
+                            <th id="submissionEmployeeHeader">From Employee</th>
+                            <th id="submissionToHeader">To</th>
+                            <th id="submissionDateHeader">Submitted Date</th>
+                            <th id="submissionFilesHeader">Files</th>
+                            <th id="submissionCommentsHeader">Comments</th>
+                            <th id="submissionActionsHeader">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="submittedWorkTable">
+                        <!-- Submitted work will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users" class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> <span id="usersTitle">All System Users</span></h2>
+                <div class="filter-controls">
+                    <select id="userTypeFilter" onchange="filterUsers()" class="filter-select">
+                        <option value="all" id="filterAllTypes">All Types</option>
+                        <option value="manager" id="filterManagers">Managers</option>
+                        <option value="employee" id="filterEmployees">Employees</option>
+                        <option value="admin" id="filterAdmins">Admins</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th id="userNameHeader">Name</th>
+                            <th id="userEmailHeader">Email</th>
+                            <th id="userTypeHeader">User Type</th>
+                            <th id="userLastLoginHeader">Last Login</th>
+                            <th id="userActionsHeader">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <!-- Users will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Details Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTaskTitle">Task Details</h2>
+                <button class="close-modal" onclick="closeTaskModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <strong id="detailManager">Assigned By:</strong>
+                        <span id="modalTaskManager">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong id="detailEmployee">Assigned To:</strong>
+                        <span id="modalTaskEmployee">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong id="detailStartDate">Start Date:</strong>
+                        <span id="modalTaskStartDate">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong id="detailEndDate">End Date:</strong>
+                        <span id="modalTaskEndDate">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong id="detailPriority">Priority:</strong>
+                        <span id="modalTaskPriority">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong id="detailStatus">Status:</strong>
+                        <span id="modalTaskStatus">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong id="detailProgress">Progress:</strong>
+                        <span id="modalTaskProgress">0%</span>
+                    </div>
+                </div>
+
+                <h3 id="descriptionTitle">Description</h3>
+                <p id="modalTaskDescription"></p>
+
+                <h3 id="attachmentsTitle">Attachments</h3>
+                <div class="attachments-grid" id="modalAttachments">
+                    <!-- Attachments will be populated by JavaScript -->
+                </div>
+
+                <!-- Status Update Buttons -->
+                <div class="status-update-buttons" id="statusUpdateButtons">
+                    <!-- Status buttons will be populated by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeTaskModal()" id="cancelBtn">
+                    <i class="fas fa-times"></i>
+                    <span>Close</span>
+                </button>
+                <button type="button" class="btn-primary" onclick="openReassignModal()" id="reassignBtn">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Reassign Task</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Task Modal -->
+    <div id="newTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="newTaskTitle">Assign New Task</h2>
+                <button class="close-modal" onclick="closeNewTaskModal()">&times;</button>
+            </div>
+            <form id="newTaskForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="newTaskName">
+                            <i class="fas fa-heading"></i>
+                            <span id="newTaskNameLabel">Task Title</span>
+                        </label>
+                        <input type="text" id="newTaskName" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newTaskDescription">
+                            <i class="fas fa-align-left"></i>
+                            <span id="newTaskDescLabel">Description</span>
+                        </label>
+                        <textarea id="newTaskDescription" class="form-control" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="newTaskAssignTo">
+                                <i class="fas fa-user"></i>
+                                <span id="newTaskAssignToLabel">Assign To</span>
+                            </label>
+                            <select id="newTaskAssignTo" class="form-select" required>
+                                <!-- Users will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newTaskPriority">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span id="newTaskPriorityLabel">Priority</span>
+                            </label>
+                            <select id="newTaskPriority" class="form-select">
+                                <option value="low" id="newTaskPriorityLow">Low</option>
+                                <option value="medium" id="newTaskPriorityMedium">Medium</option>
+                                <option value="high" id="newTaskPriorityHigh">High</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="newTaskStartDate">
+                                <i class="fas fa-calendar"></i>
+                                <span id="newTaskStartDateLabel">Start Date</span>
+                            </label>
+                            <input type="date" id="newTaskStartDate" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newTaskEndDate">
+                                <i class="fas fa-calendar-check"></i>
+                                <span id="newTaskEndDateLabel">End Date</span>
+                            </label>
+                            <input type="date" id="newTaskEndDate" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- File Upload Section -->
+                    <div class="file-upload-section">
+                        <div class="form-group">
+                            <label for="taskFiles">
+                                <i class="fas fa-paperclip"></i>
+                                <span id="taskFilesLabel">Attachments (Optional)</span>
+                            </label>
+                            <div class="file-upload-area" onclick="document.getElementById('taskFileInput').click()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p class="file-upload-text" id="uploadText">Click to upload files or drag and drop</p>
+                                <p class="file-upload-hint" id="uploadTypes">PDF, DOC, DOCX, JPG, PNG, ZIP (Max 10MB each)</p>
+                                <input type="file" id="taskFileInput" multiple style="display: none;" onchange="handleNewTaskFileUpload(this.files)">
+                            </div>
+                            
+                            <div class="file-uploaded-list" id="newTaskUploadedFiles">
+                                <!-- Uploaded files will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeNewTaskModal()" id="cancelNewTaskBtn">
+                        <i class="fas fa-times"></i>
+                        <span>Cancel</span>
+                    </button>
+                    <button type="submit" class="btn-primary" id="assignNewTaskBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Assign Task</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reassign Task Modal -->
+    <div id="reassignModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="reassignTitle">Reassign Task</h2>
+                <button class="close-modal" onclick="closeReassignModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="reassign-form">
+                    <div class="form-group">
+                        <label for="reassignToUser" id="reassignToLabel">Reassign to:</label>
+                        <select id="reassignToUser" class="form-select">
+                            <!-- Users will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reassignReason" id="reassignReasonLabel">Reason for reassignment:</label>
+                        <textarea id="reassignReason" rows="4" placeholder="Optional reason for reassignment..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeReassignModal()" id="cancelReassignBtn">
+                    <i class="fas fa-times"></i>
+                    <span>Cancel</span>
+                </button>
+                <button type="button" class="btn-primary" onclick="confirmReassignment()" id="confirmReassignBtn">
+                    <i class="fas fa-check"></i>
+                    <span>Confirm Reassignment</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submission Details Modal -->
+    <div id="submissionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalSubmissionTitle">Submission Details</h2>
+                <button class="close-modal" onclick="closeSubmissionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="submission-info">
+                    <div class="submission-header">
+                        <div>
+                            <strong id="submissionTaskName">Task:</strong>
+                            <span id="modalSubmissionTask">--</span>
+                        </div>
+                        <div class="badge badge-under-review" id="modalSubmissionStatus">Under Review</div>
+                    </div>
+                    <div class="submission-meta">
+                        <div>
+                            <strong id="submissionByLabel">Submitted by:</strong>
+                            <span id="modalSubmissionBy">--</span>
+                        </div>
+                        <div>
+                            <strong id="submissionToLabel">To:</strong>
+                            <span id="modalSubmissionTo">--</span>
+                        </div>
+                        <div>
+                            <strong id="submissionDateLabel">Date:</strong>
+                            <span id="modalSubmissionDate">--</span>
+                        </div>
+                    </div>
+                    <div class="submission-files" id="modalSubmissionFiles">
+                        <!-- Submission files will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <h3 id="commentsTitle">Employee Comments</h3>
+                <p id="modalSubmissionComments"></p>
+
+                <div class="attachments-grid" id="modalSubmissionAttachments">
+                    <!-- Submission attachments will be populated by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeSubmissionModal()" id="closeSubmissionBtn">
+                    <i class="fas fa-times"></i>
+                    <span>Close</span>
+                </button>
+                <button type="button" class="btn-primary" onclick="downloadSubmission()" id="downloadSubmissionBtn">
+                    <i class="fas fa-download"></i>
+                    <span>Download All Files</span>
+                </button>
+                <button type="button" class="btn-primary" onclick="deleteSubmission()" id="deleteSubmissionBtn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    <i class="fas fa-trash"></i>
+                    <span>Delete Submission</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="editUserTitle">Edit User</h2>
+                <button class="close-modal" onclick="closeEditUserModal()">&times;</button>
+            </div>
+            <form id="editUserForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editUserId">
+                    <input type="hidden" id="editUserEmail">
+                    
+                    <div class="form-group">
+                        <label for="editUserName">Full Name</label>
+                        <input type="text" id="editUserName" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editUserType">User Type</label>
+                        <select id="editUserType" class="form-control" required>
+                            <option value="employee">Employee</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    
+                    <div id="passwordFields">
+                        <div class="form-group">
+                            <label for="editUserPassword">New Password (leave empty to keep current)</label>
+                            <input type="password" id="editUserPassword" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmEditPassword">Confirm New Password</label>
+                            <input type="password" id="confirmEditPassword" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeEditUserModal()">
+                        <i class="fas fa-times"></i>
+                        <span>Cancel</span>
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        <span>Save Changes</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Logout Button -->
+    <button class="logout-btn" onclick="logout()" title="Logout">
+        <i class="fas fa-sign-out-alt"></i>
+    </button>
+
+    <script>
+        // ==================== TRANSLATIONS ====================
+        const TRANSLATIONS = {
+            en: {
+                // Page Elements
+                title: "Admin Panel | ProManage",
+                adminName: "Admin Dashboard",
+                totalTasksTitle: "Total Tasks",
+                tasksInProgress: "In Progress",
+                
+                // Tabs
+                tabAllTasks: "All Tasks",
+                tabSubmittedWork: "Submitted Work",
+                tabUsers: "All Users",
+                
+                // Section Titles
+                allTasksTitle: "All System Tasks",
+                submittedWorkTitle: "Submitted Work",
+                usersTitle: "All System Users",
+                
+                // Table Headers - All Tasks
+                taskNameHeader: "Task Name",
+                assignedByHeader: "Assigned By",
+                assignedToHeader: "Assigned To",
+                startDateHeader: "Start Date",
+                endDateHeader: "End Date",
+                priorityHeader: "Priority",
+                statusHeader: "Status",
+                actionsHeader: "Actions",
+                
+                // Table Headers - Submitted Work
+                submissionTaskHeader: "Task",
+                submissionEmployeeHeader: "From Employee",
+                submissionToHeader: "To",
+                submissionDateHeader: "Submitted Date",
+                submissionFilesHeader: "Files",
+                submissionCommentsHeader: "Comments",
+                submissionActionsHeader: "Actions",
+                
+                // Table Headers - Users
+                userNameHeader: "Name",
+                userEmailHeader: "Email",
+                userTypeHeader: "User Type",
+                userLastLoginHeader: "Last Login",
+                userActionsHeader: "Actions",
+                
+                // Filter Options
+                filterAll: "All Tasks",
+                filterPending: "Pending",
+                filterInProgress: "In Progress",
+                filterCompleted: "Completed",
+                filterReview: "Under Review",
+                filterAllUsers: "All Users",
+                filterAllSubmissions: "All Submissions",
+                filterToday: "Today",
+                filterWeek: "This Week",
+                filterMonth: "This Month",
+                filterAllTypes: "All Types",
+                filterManagers: "Managers",
+                filterEmployees: "Employees",
+                filterAdmins: "Admins",
+                
+                // Status Badges
+                statusPending: "Pending",
+                statusInProgress: "In Progress",
+                statusCompleted: "Completed",
+                statusUnderReview: "Under Review",
+                
+                // Priority Badges
+                priorityLow: "Low",
+                priorityMedium: "Medium",
+                priorityHigh: "High",
+                
+                // User Type Badges
+                userTypeManager: "Manager",
+                userTypeEmployee: "Employee",
+                userTypeAdmin: "Admin",
+                
+                // Action Buttons
+                actionReassignToManager: "Assign to Manager",
+                actionReassignToEmployee: "Assign to Employee",
+                actionView: "View Details",
+                actionReassign: "Reassign",
+                actionDelete: "Delete",
+                actionDownload: "Download",
+                actionEdit: "Edit",
+                actionDeleteUser: "Delete",
+                newTaskBtn: "New Task",
+                deleteSubmissionBtn: "Delete",
+                
+                // Modal Elements
+                modalTaskTitle: "Task Details",
+                detailManager: "Assigned By:",
+                detailEmployee: "Assigned To:",
+                detailStartDate: "Start Date:",
+                detailEndDate: "End Date:",
+                detailPriority: "Priority:",
+                detailStatus: "Status:",
+                detailProgress: "Progress:",
+                descriptionTitle: "Description",
+                attachmentsTitle: "Attachments",
+                cancelBtn: "Close",
+                reassignBtn: "Reassign Task",
+                reassignTitle: "Reassign Task",
+                reassignToLabel: "Reassign to:",
+                reassignReasonLabel: "Reason for reassignment:",
+                cancelReassignBtn: "Cancel",
+                confirmReassignBtn: "Confirm Reassignment",
+                modalSubmissionTitle: "Submission Details",
+                submissionTaskName: "Task:",
+                submissionByLabel: "Submitted by:",
+                submissionToLabel: "To:",
+                submissionDateLabel: "Date:",
+                commentsTitle: "Employee Comments",
+                closeSubmissionBtn: "Close",
+                downloadSubmissionBtn: "Download All Files",
+                deleteSubmissionBtn: "Delete Submission",
+                editUserTitle: "Edit User",
+                newTaskTitle: "Assign New Task",
+                newTaskNameLabel: "Task Title",
+                newTaskDescLabel: "Description",
+                newTaskAssignToLabel: "Assign To",
+                newTaskPriorityLabel: "Priority",
+                newTaskStartDateLabel: "Start Date",
+                newTaskEndDateLabel: "End Date",
+                newTaskPriorityLow: "Low",
+                newTaskPriorityMedium: "Medium",
+                newTaskPriorityHigh: "High",
+                cancelNewTaskBtn: "Cancel",
+                assignNewTaskBtn: "Assign Task",
+                taskFilesLabel: "Attachments (Optional)",
+                uploadText: "Click to upload files or drag and drop",
+                uploadTypes: "PDF, DOC, DOCX, JPG, PNG, ZIP (Max 10MB each)",
+                
+                // Messages
+                noTasksFound: "No tasks found in the system",
+                noSubmissionsFound: "No work submissions found",
+                noUsersFound: "No users found in the system",
+                taskReassigned: "Task reassigned successfully!",
+                taskAssigned: "Task assigned successfully!",
+                submissionDownloaded: "Submission downloaded successfully!",
+                submissionDeleted: "Submission deleted successfully!",
+                taskStatusUpdated: "Task status updated",
+                logoutConfirm: "Are you sure you want to logout?",
+                deleteConfirm: "Are you sure you want to delete this?",
+                reassignConfirm: "Are you sure you want to reassign this task?",
+                deleteUserConfirm: "Are you sure you want to delete this user?",
+                userUpdated: "User updated successfully!",
+                userDeleted: "User deleted successfully!",
+                passwordsNotMatch: "Passwords do not match",
+                fileDownloaded: "File downloaded successfully!",
+                fileOpening: "Opening file...",
+                submissionAddedToSubmittedWork: "Task added to Submitted Work",
+                fileTooLarge: "File size exceeds 10MB limit",
+                filesUploaded: "Files uploaded successfully",
+                fileRemoved: "File removed"
+            },
+            ar: {
+                // Page Elements
+                title: "لوحة المسؤول | برومانج",
+                adminName: "لوحة تحكم المسؤول",
+                totalTasksTitle: "إجمالي المهام",
+                tasksInProgress: "قيد التنفيذ",
+                
+                // Tabs
+                tabAllTasks: "جميع المهام",
+                tabSubmittedWork: "العمل المُسلم",
+                tabUsers: "جميع المستخدمين",
+                
+                // Section Titles
+                allTasksTitle: "جميع مهام النظام",
+                submittedWorkTitle: "العمل المُسلم",
+                usersTitle: "جميع مستخدمي النظام",
+                
+                // Table Headers - All Tasks
+                taskNameHeader: "اسم المهمة",
+                assignedByHeader: "تم التعيين بواسطة",
+                assignedToHeader: "تم التعيين لـ",
+                startDateHeader: "تاريخ البدء",
+                endDateHeader: "تاريخ الانتهاء",
+                priorityHeader: "الأولوية",
+                statusHeader: "الحالة",
+                actionsHeader: "الإجراءات",
+                
+                // Table Headers - Submitted Work
+                submissionTaskHeader: "المهمة",
+                submissionEmployeeHeader: "من الموظف",
+                submissionToHeader: "إلى",
+                submissionDateHeader: "تاريخ التسليم",
+                submissionFilesHeader: "الملفات",
+                submissionCommentsHeader: "ملاحظات",
+                submissionActionsHeader: "الإجراءات",
+                
+                // Table Headers - Users
+                userNameHeader: "الاسم",
+                userEmailHeader: "البريد الإلكتروني",
+                userTypeHeader: "نوع المستخدم",
+                userLastLoginHeader: "آخر دخول",
+                userActionsHeader: "الإجراءات",
+                
+                // Filter Options
+                filterAll: "جميع المهام",
+                filterPending: "قيد الانتظار",
+                filterInProgress: "قيد التنفيذ",
+                filterCompleted: "مكتمل",
+                filterReview: "قيد المراجعة",
+                filterAllUsers: "جميع المستخدمين",
+                filterAllSubmissions: "جميع التسليمات",
+                filterToday: "اليوم",
+                filterWeek: "هذا الأسبوع",
+                filterMonth: "هذا الشهر",
+                filterAllTypes: "جميع الأنواع",
+                filterManagers: "المديرين",
+                filterEmployees: "الموظفين",
+                filterAdmins: "المسؤولين",
+                
+                // Status Badges
+                statusPending: "قيد الانتظار",
+                statusInProgress: "قيد التنفيذ",
+                statusCompleted: "مكتمل",
+                statusUnderReview: "قيد المراجعة",
+                
+                // Priority Badges
+                priorityLow: "منخفضة",
+                priorityMedium: "متوسطة",
+                priorityHigh: "عالية",
+                
+                // User Type Badges
+                userTypeManager: "مدير",
+                userTypeEmployee: "موظف",
+                userTypeAdmin: "مسؤول",
+                
+                // Action Buttons
+                actionReassignToManager: "تعيين لمدير",
+                actionReassignToEmployee: "تعيين لموظف",
+                actionView: "عرض التفاصيل",
+                actionReassign: "إعادة تخصيص",
+                actionDelete: "حذف",
+                actionDownload: "تحميل",
+                actionEdit: "تعديل",
+                actionDeleteUser: "حذف",
+                newTaskBtn: "مهمة جديدة",
+                deleteSubmissionBtn: "حذف",
+                
+                // Modal Elements
+                modalTaskTitle: "تفاصيل المهمة",
+                detailManager: "تم التعيين بواسطة:",
+                detailEmployee: "تم التعيين لـ:",
+                detailStartDate: "تاريخ البدء:",
+                detailEndDate: "تاريخ الانتهاء:",
+                detailPriority: "الأولوية:",
+                detailStatus: "الحالة:",
+                detailProgress: "التقدم:",
+                descriptionTitle: "الوصف",
+                attachmentsTitle: "المرفقات",
+                cancelBtn: "إغلاق",
+                reassignBtn: "إعادة تخصيص المهمة",
+                reassignTitle: "إعادة تخصيص المهمة",
+                reassignToLabel: "إعادة التخصيص لـ:",
+                reassignReasonLabel: "سبب إعادة التخصيص:",
+                cancelReassignBtn: "إلغاء",
+                confirmReassignBtn: "تأكيد إعادة التخصيص",
+                modalSubmissionTitle: "تفاصيل التسليم",
+                submissionTaskName: "المهمة:",
+                submissionByLabel: "تم التسليم بواسطة:",
+                submissionToLabel: "إلى:",
+                submissionDateLabel: "التاريخ:",
+                commentsTitle: "ملاحظات الموظف",
+                closeSubmissionBtn: "إغلاق",
+                downloadSubmissionBtn: "تحميل جميع الملفات",
+                deleteSubmissionBtn: "حذف التسليم",
+                editUserTitle: "تعديل المستخدم",
+                newTaskTitle: "تعيين مهمة جديدة",
+                newTaskNameLabel: "عنوان المهمة",
+                newTaskDescLabel: "الوصف",
+                newTaskAssignToLabel: "تعيين لـ",
+                newTaskPriorityLabel: "الأولوية",
+                newTaskStartDateLabel: "تاريخ البدء",
+                newTaskEndDateLabel: "تاريخ الانتهاء",
+                newTaskPriorityLow: "منخفضة",
+                newTaskPriorityMedium: "متوسطة",
+                newTaskPriorityHigh: "عالية",
+                cancelNewTaskBtn: "إلغاء",
+                assignNewTaskBtn: "تعيين المهمة",
+                taskFilesLabel: "المرفقات (اختياري)",
+                uploadText: "انقر لرفع الملفات أو اسحب وأفلت",
+                uploadTypes: "PDF, DOC, DOCX, JPG, PNG, ZIP (الحد الأقصى 10MB لكل ملف)",
+                
+                // Messages
+                noTasksFound: "لا توجد مهام في النظام",
+                noSubmissionsFound: "لا توجد تسليمات عمل",
+                noUsersFound: "لا يوجد مستخدمين في النظام",
+                taskReassigned: "تم إعادة تخصيص المهمة بنجاح!",
+                taskAssigned: "تم تعيين المهمة بنجاح!",
+                submissionDownloaded: "تم تحميل التسليم بنجاح!",
+                submissionDeleted: "تم حذف التسليم بنجاح!",
+                taskStatusUpdated: "تم تحديث حالة المهمة",
+                logoutConfirm: "هل أنت متأكد من تسجيل الخروج؟",
+                deleteConfirm: "هل أنت متأكد من حذف هذا؟",
+                reassignConfirm: "هل أنت متأكد من إعادة تخصيص هذه المهمة؟",
+                deleteUserConfirm: "هل أنت متأكد من حذف هذا المستخدم؟",
+                userUpdated: "تم تحديث المستخدم بنجاح!",
+                userDeleted: "تم حذف المستخدم بنجاح!",
+                passwordsNotMatch: "كلمات المرور غير متطابقة",
+                fileDownloaded: "تم تحميل الملف بنجاح!",
+                fileOpening: "جاري فتح الملف...",
+                submissionAddedToSubmittedWork: "تم إضافة المهمة إلى العمل المُسلم",
+                fileTooLarge: "حجم الملف يتجاوز الحد المسموح 10MB",
+                filesUploaded: "تم رفع الملفات بنجاح",
+                fileRemoved: "تم إزالة الملف"
+            }
+        };
+
+        // ==================== GLOBAL VARIABLES ====================
+        let allTasks = [];
+        let submittedWork = [];
+        let allUsers = [];
+        let selectedTaskId = null;
+        let selectedSubmissionId = null;
+        let currentTab = 'all-tasks';
+        let currentUser = null;
+        let selectedUserId = null;
+        let newTaskUploadedFiles = [];
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // ✅ **حل مشكلة البيانات الوهمية - تحميل الاسم أولاً**
+            loadAdminNameFromStorage();
+            
+            // Check if user is logged in as admin
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!currentUser || currentUser.userType !== 'admin') {
+                // Redirect to login page if not logged in as admin
+                alert('Please login as admin first');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            initializeLanguageSwitcher();
+            loadAdminData();
+            loadAllData();
+            updateStats();
+            
+            // ✅ **إعداد المزامنة مع المدير**
+            setupSyncWithManager();
+            
+            // Initialize forms
+            document.getElementById('newTaskForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                assignNewTask();
+            });
+            
+            // Initialize file upload drag and drop
+            initializeFileUpload();
+        });
+
+        // ✅ **دالة جديدة: إعداد المزامنة مع صفحة المدير**
+        function setupSyncWithManager() {
+            // تحديث المستخدمين عند حدوث تغييرات
+            window.addEventListener('storage', function(event) {
+                if (event.key === 'users') {
+                    console.log('🔄 Users updated from another page, refreshing...');
+                    loadAllData();
+                }
+                if (event.key === 'tasks') {
+                    console.log('🔄 Tasks updated from another page, refreshing...');
+                    loadAllData();
+                }
+                if (event.key === 'submittedWork') {
+                    console.log('🔄 Submitted work updated from another page, refreshing...');
+                    loadAllData();
+                }
+            });
+            
+            // تحديث البيانات كل 5 ثواني (كحل بديل)
+            setInterval(() => {
+                loadAllData();
+            }, 5000);
+        }
+
+        // ✅ **دالة جديدة لتحميل اسم الأدمن من الذاكرة مباشرة**
+        function loadAdminNameFromStorage() {
+            const adminName = localStorage.getItem('adminOriginalName');
+            const adminEmail = localStorage.getItem('adminEmail') || localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser'))?.email : '';
+            
+            if (adminName && adminEmail) {
+                // تحديث الصفحة فوراً
+                document.getElementById('adminName').textContent = `${adminName}'s Dashboard`;
+                
+                const initials = adminName.split(' ')
+                    .map(n => n[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
+                
+                document.getElementById('adminAvatar').textContent = initials;
+                
+                const adminLabel = 'Admin';
+                document.getElementById('adminEmail').textContent = `${adminEmail} • ${adminLabel}`;
+                
+                console.log('✅ Admin name loaded from storage:', adminName);
+            }
+        }
+
+        // ==================== LANGUAGE MANAGEMENT ====================
+        function initializeLanguageSwitcher() {
+            const languageButtons = document.querySelectorAll('.lang-btn');
+            
+            languageButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const lang = this.dataset.lang;
+                    setLanguage(lang);
+                });
+            });
+            
+            // Load saved language
+            const savedLang = localStorage.getItem('language') || 'en';
+            setLanguage(savedLang);
+        }
+
+        function setLanguage(lang) {
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
+            
+            // Set document direction and language
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = lang;
+            
+            // Save preference
+            localStorage.setItem('language', lang);
+            
+            // Translate page
+            translatePage(lang);
+            
+            // Reload data to update translations
+            loadAllData();
+        }
+
+        function translatePage(lang) {
+            const t = TRANSLATIONS[lang];
+            
+            // Update page title
+            document.title = t.title;
+            
+            // Update all elements with IDs
+            const elementsToTranslate = [
+                'adminName', 'totalTasksTitle', 'tasksInProgress',
+                'tabAllTasks', 'tabSubmittedWork', 'tabUsers',
+                'allTasksTitle', 'submittedWorkTitle', 'usersTitle',
+                'taskNameHeader', 'assignedByHeader', 'assignedToHeader', 'startDateHeader',
+                'endDateHeader', 'priorityHeader', 'statusHeader', 'actionsHeader',
+                'submissionTaskHeader', 'submissionEmployeeHeader', 'submissionToHeader',
+                'submissionDateHeader', 'submissionFilesHeader', 'submissionCommentsHeader', 'submissionActionsHeader',
+                'userNameHeader', 'userEmailHeader', 'userTypeHeader', 'userLastLoginHeader', 'userActionsHeader',
+                'filterAll', 'filterPending', 'filterInProgress', 'filterCompleted',
+                'filterReview', 'filterAllUsers', 'filterAllSubmissions', 'filterToday',
+                'filterWeek', 'filterMonth', 'filterAllTypes', 'filterManagers',
+                'filterEmployees', 'filterAdmins', 'modalTaskTitle', 'detailManager',
+                'detailEmployee', 'detailStartDate', 'detailEndDate', 'detailPriority',
+                'detailStatus', 'detailProgress', 'descriptionTitle', 'attachmentsTitle',
+                'cancelBtn', 'reassignBtn', 'reassignTitle', 'reassignToLabel',
+                'reassignReasonLabel', 'cancelReassignBtn', 'confirmReassignBtn',
+                'modalSubmissionTitle', 'submissionTaskName', 'submissionByLabel',
+                'submissionToLabel', 'submissionDateLabel', 'commentsTitle', 'closeSubmissionBtn',
+                'downloadSubmissionBtn', 'deleteSubmissionBtn', 'editUserTitle', 'newTaskBtn', 'newTaskTitle',
+                'newTaskNameLabel', 'newTaskDescLabel', 'newTaskAssignToLabel', 'newTaskPriorityLabel',
+                'newTaskStartDateLabel', 'newTaskEndDateLabel', 'newTaskPriorityLow', 'newTaskPriorityMedium',
+                'newTaskPriorityHigh', 'cancelNewTaskBtn', 'assignNewTaskBtn', 'taskFilesLabel',
+                'uploadText', 'uploadTypes'
+            ];
+            
+            elementsToTranslate.forEach(id => {
+                const element = document.getElementById(id);
+                if (element && t[id]) {
+                    element.textContent = t[id];
+                }
+            });
+        }
+
+        function getCurrentLang() {
+            return localStorage.getItem('language') || 'en';
+        }
+
+        // ==================== FILE UPLOAD MANAGEMENT ====================
+        function initializeFileUpload() {
+            const fileUploadArea = document.querySelector('.file-upload-area');
+            
+            if (fileUploadArea) {
+                // Handle drag and drop
+                fileUploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.style.borderColor = '#4361ee';
+                    this.style.background = 'rgba(67, 97, 238, 0.05)';
+                });
+                
+                fileUploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.style.borderColor = '#e2e8f0';
+                    this.style.background = 'transparent';
+                });
+                
+                fileUploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.style.borderColor = '#e2e8f0';
+                    this.style.background = 'transparent';
+                    
+                    const files = e.dataTransfer.files;
+                    handleNewTaskFileUpload(files);
+                });
+            }
+        }
+
+        function handleNewTaskFileUpload(files) {
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            Array.from(files).forEach(file => {
+                // Check file size (10MB limit)
+                if (file.size > 10 * 1024 * 1024) {
+                    showToast(t.fileTooLarge, 'error');
+                    return;
+                }
+                
+                // Add file to uploaded files array
+                newTaskUploadedFiles.push({
+                    name: file.name,
+                    size: formatFileSize(file.size),
+                    type: getFileType(file.name),
+                    file: file
+                });
+            });
+            
+            // Update uploaded files display
+            updateNewTaskUploadedFilesDisplay();
+            
+            if (files.length > 0) {
+                showToast(t.filesUploaded, 'success');
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function getFileType(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (['pdf'].includes(ext)) return 'pdf';
+            if (['doc', 'docx'].includes(ext)) return 'doc';
+            if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(ext)) return 'image';
+            if (['zip', 'rar'].includes(ext)) return 'archive';
+            return 'other';
+        }
+
+        function getFileIcon(fileType) {
+            switch(fileType) {
+                case 'pdf': return 'file-pdf';
+                case 'doc': return 'file-word';
+                case 'image': return 'file-image';
+                case 'archive': return 'file-archive';
+                default: return 'file';
+            }
+        }
+
+        function updateNewTaskUploadedFilesDisplay() {
+            const uploadedFilesContainer = document.getElementById('newTaskUploadedFiles');
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            if (newTaskUploadedFiles.length === 0) {
+                uploadedFilesContainer.innerHTML = '';
+                return;
+            }
+            
+            uploadedFilesContainer.innerHTML = newTaskUploadedFiles.map((file, index) => `
+                <div class="file-uploaded-item">
+                    <div class="file-uploaded-info">
+                        <div class="file-uploaded-icon">
+                            <i class="fas fa-${getFileIcon(file.type)}"></i>
+                        </div>
+                        <div>
+                            <div class="file-uploaded-name">${file.name}</div>
+                            <div class="file-uploaded-size">${file.size}</div>
+                        </div>
+                    </div>
+                    <button class="file-remove-btn" onclick="removeNewTaskUploadedFile(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function removeNewTaskUploadedFile(index) {
+            const t = TRANSLATIONS[getCurrentLang()];
+            newTaskUploadedFiles.splice(index, 1);
+            updateNewTaskUploadedFilesDisplay();
+            showToast(t.fileRemoved, 'success');
+        }
+
+        // ==================== ADMIN DATA ====================
+        function loadAdminData() {
+            if (!currentUser) {
+                logout();
+                return;
+            }
+            
+            // ✅ **الحصول على اسم الأدمن من localStorage أولاً**
+            let adminName = localStorage.getItem('adminOriginalName');
+            
+            // إذا لم يكن موجوداً، حاول الحصول من currentUser
+            if (!adminName) {
+                adminName = currentUser.name || 
+                           currentUser.email.split('@')[0];
+                
+                // حفظه لاستخدامه لاحقاً
+                localStorage.setItem('adminOriginalName', adminName);
+            }
+            
+            const adminEmail = currentUser.email;
+            
+            // ✅ **استخدام الاسم الحقيقي بدلاً من "Admin Dashboard"**
+            const t = TRANSLATIONS[getCurrentLang()];
+            document.getElementById('adminName').textContent = `${adminName}'s Dashboard`;
+            
+            // Set avatar initial
+            const initials = adminName.split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2);
+            
+            document.getElementById('adminAvatar').textContent = initials;
+            
+            // Update email display
+            const adminLabel = getCurrentLang() === 'ar' ? 'مسؤول' : 'Admin';
+            document.getElementById('adminEmail').textContent = `${adminEmail} • ${adminLabel}`;
+            
+            console.log('👤 Admin loaded:', { name: adminName, email: adminEmail });
+        }
+
+        // ==================== DATA LOADING ====================
+        function loadAllData() {
+            // Load all tasks from storage
+            allTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            
+            // Load submitted work from storage
+            submittedWork = JSON.parse(localStorage.getItem('submittedWork')) || [];
+            
+            // Load all users from storage
+            allUsers = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // ✅ **تحديث اسم المستخدم omnia742@gmail.com تلقائياً**
+            updateUserName('omnia742@gmail.com', 'omnia abdelshafy');
+            
+            // Populate user filter
+            populateUserFilter();
+            
+            // Load current tab data
+            loadCurrentTab();
+            
+            updateStats();
+        }
+
+        function updateUserName(email, newName) {
+            const userIndex = allUsers.findIndex(u => u.email === email);
+            if (userIndex > -1 && allUsers[userIndex].name !== newName) {
+                allUsers[userIndex].name = newName;
+                localStorage.setItem('users', JSON.stringify(allUsers));
+                console.log(`✅ Updated user name for ${email} to: ${newName}`);
+            }
+        }
+
+        function loadCurrentTab() {
+            switch(currentTab) {
+                case 'all-tasks':
+                    loadAllTasks();
+                    break;
+                case 'submitted-work':
+                    loadSubmittedWork();
+                    break;
+                case 'users':
+                    loadAllUsers();
+                    break;
+            }
+        }
+
+        function showTab(tabId) {
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            
+            // Update active section
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            
+            currentTab = tabId;
+            loadCurrentTab();
+        }
+
+        // ==================== ALL TASKS MANAGEMENT ====================
+        function loadAllTasks(filter = 'all', userFilter = 'all') {
+            const tasksTable = document.getElementById('allTasksTable');
+            const t = TRANSLATIONS[getCurrentLang()];
+            tasksTable.innerHTML = '';
+            
+            let filteredTasks = allTasks;
+            
+            // Apply status filter
+            if (filter !== 'all') {
+                filteredTasks = filteredTasks.filter(task => task.status === filter);
+            }
+            
+            // Apply user filter
+            if (userFilter !== 'all') {
+                filteredTasks = filteredTasks.filter(task => 
+                    task.assignedToEmail === userFilter || task.assignedByEmail === userFilter
+                );
+            }
+            
+            // If no tasks, show message
+            if (filteredTasks.length === 0) {
+                tasksTable.innerHTML = `
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="fas fa-tasks"></i>
+                                <h3>${t.noTasksFound}</h3>
+                                <p>No tasks have been created in the system yet.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredTasks.forEach(task => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <strong style="color: #1e293b; font-size: 15px;">${task.title}</strong><br>
+                        <div class="task-description">${task.description.substring(0, 80)}...</div>
+                        ${task.attachments && task.attachments.length > 0 ? `
+                            <div class="task-files">
+                                ${task.attachments.slice(0, 2).map(file => `
+                                    <div class="file-item" onclick="openFile('${file.name}', '${file.content || ''}')">
+                                        <i class="fas fa-file"></i>
+                                        <span>${file.name}</span>
+                                    </div>
+                                `).join('')}
+                                ${task.attachments.length > 2 ? 
+                                    `<div class="file-item">+${task.attachments.length - 2} more</div>` : ''
+                                }
+                            </div>
+                        ` : ''}
+                    </td>
+                    <td>
+                        <div class="badge badge-${task.assignedByType || 'manager'}" style="padding: 6px 12px;">
+                            ${task.assignedBy}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="badge badge-${task.assignedToType || 'employee'}" style="padding: 6px 12px;">
+                            ${task.assignedTo}
+                        </div>
+                    </td>
+                    <td style="font-weight: 500; color: #475569;">${task.startDate}</td>
+                    <td style="font-weight: 500; color: #475569;">${task.endDate}</td>
+                    <td>
+                        <span class="badge badge-${task.priority}">
+                            ${t[`priority${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}`]}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-${task.status}">
+                            ${t[`status${task.status.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('')}`]}
+                        </span>
+                        ${task.status === 'in-progress' ? `
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${task.progress || 0}%"></div>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <!-- ✅ **View Details Button فقط** -->
+                            <button class="action-btn view" onclick="viewTaskDetails('${task.id}')">
+                                <i class="fas fa-eye"></i> ${t.actionView}
+                            </button>
+                            <!-- ✅ **Reassign Button لإعادة التخصيص لأي مستخدم** -->
+                            <button class="action-btn reassign" onclick="openReassignModal('${task.id}')">
+                                <i class="fas fa-exchange-alt"></i> ${t.actionReassign}
+                            </button>
+                            <!-- ✅ **Delete Button لحذف المهمة** -->
+                            <button class="action-btn delete" onclick="deleteTask('${task.id}')">
+                                <i class="fas fa-trash"></i> ${t.actionDelete}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tasksTable.appendChild(row);
+            });
+        }
+
+        function filterAllTasks() {
+            const statusFilter = document.getElementById('taskFilter').value;
+            const userFilter = document.getElementById('userFilter').value;
+            loadAllTasks(statusFilter, userFilter);
+        }
+
+        // ==================== SUBMITTED WORK MANAGEMENT ====================
+        function loadSubmittedWork(filter = 'all') {
+            const workTable = document.getElementById('submittedWorkTable');
+            const t = TRANSLATIONS[getCurrentLang()];
+            workTable.innerHTML = '';
+            
+            let filteredSubmissions = submittedWork;
+            
+            // Apply time filter
+            if (filter !== 'all') {
+                const now = new Date();
+                filteredSubmissions = filteredSubmissions.filter(submission => {
+                    const subDate = new Date(submission.submittedAt);
+                    
+                    switch(filter) {
+                        case 'today':
+                            return subDate.toDateString() === now.toDateString();
+                        case 'week':
+                            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                            return subDate >= weekAgo;
+                        case 'month':
+                            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                            return subDate >= monthAgo;
+                        default:
+                            return true;
+                    }
+                });
+            }
+            
+            // If no submissions, show message
+            if (filteredSubmissions.length === 0) {
+                workTable.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-paper-plane"></i>
+                                <h3>${t.noSubmissionsFound}</h3>
+                                <p>No work has been submitted by employees yet.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredSubmissions.forEach(submission => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <strong style="color: #1e293b; font-size: 15px;">${submission.taskTitle}</strong><br>
+                        <small style="color: #64748b;">ID: ${submission.taskId}</small>
+                    </td>
+                    <td>
+                        <div class="badge badge-employee">
+                            ${submission.employeeName}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="badge badge-${submission.assignedToType || 'manager'}">
+                            ${submission.assignedTo}
+                        </div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 5px;">
+                            Assigned by: ${submission.assignedBy || 'Admin'}
+                        </div>
+                    </td>
+                    <td style="font-weight: 500; color: #475569;">${new Date(submission.submittedAt).toLocaleString()}</td>
+                    <td>
+                        <div class="task-files">
+                            ${submission.files && submission.files.length > 0 ? 
+                                submission.files.slice(0, 2).map(file => `
+                                    <div class="file-item" onclick="openFile('${file.name}', '${file.content || ''}')">
+                                        <i class="fas fa-file"></i>
+                                        <span>${file.name}</span>
+                                    </div>
+                                `).join('') : 
+                                '<span style="color: #94a3b8;">No files</span>'
+                            }
+                            ${submission.files && submission.files.length > 2 ? 
+                                `<div class="file-item">+${submission.files.length - 2} more</div>` : 
+                                ''
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <div class="task-description">${submission.comments ? submission.comments.substring(0, 60) + '...' : 'No comments'}</div>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view" onclick="viewSubmissionDetails('${submission.id}')">
+                                <i class="fas fa-eye"></i> ${t.actionView}
+                            </button>
+                            <button class="action-btn delete" onclick="deleteSubmissionFromTable('${submission.id}')">
+                                <i class="fas fa-trash"></i> ${t.actionDelete}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                workTable.appendChild(row);
+            });
+        }
+
+        function filterSubmissions() {
+            const filter = document.getElementById('submissionFilter').value;
+            loadSubmittedWork(filter);
+        }
+
+        // ==================== USERS MANAGEMENT ====================
+        function loadAllUsers(filter = 'all') {
+            const usersTable = document.getElementById('usersTable');
+            const t = TRANSLATIONS[getCurrentLang()];
+            usersTable.innerHTML = '';
+            
+            let filteredUsers = allUsers;
+            
+            // Apply type filter - ❌ إزالة المديرين من العرض
+            if (filter !== 'all') {
+                filteredUsers = filteredUsers.filter(user => user.userType === filter);
+            }
+            
+            // ❌ تصفية المديرين - إظهار الموظفين والمسؤولين فقط
+            filteredUsers = filteredUsers.filter(user => user.userType !== 'manager');
+            
+            // If no users, show message
+            if (filteredUsers.length === 0) {
+                usersTable.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fas fa-users"></i>
+                                <h3>${t.noUsersFound}</h3>
+                                <p>No users found in the system.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="font-weight: 600; color: #1e293b;">${user.name}</td>
+                    <td style="color: #475569;">${user.email}</td>
+                    <td>
+                        <span class="badge badge-${user.userType}">
+                            ${t[`userType${user.userType.charAt(0).toUpperCase() + user.userType.slice(1)}`]}
+                        </span>
+                    </td>
+                    <td style="color: #64748b;">${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'}</td>
+                    <td>
+                        <div class="action-buttons" style="flex-direction: row; min-width: auto;">
+                            <button class="action-btn edit" onclick="editUser('${user.id}')" title="${t.actionEdit}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteUser('${user.id}')" title="${t.actionDelete}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                usersTable.appendChild(row);
+            });
+        }
+
+        function filterUsers() {
+            const filter = document.getElementById('userTypeFilter').value;
+            loadAllUsers(filter);
+        }
+
+        function populateUserFilter() {
+            const userFilter = document.getElementById('userFilter');
+            const t = TRANSLATIONS[getCurrentLang()];
+            userFilter.innerHTML = `<option value="all">${t.filterAllUsers}</option>`;
+            
+            // ❌ إزالة المديرين من الفلتر
+            const filteredUsers = allUsers.filter(user => user.userType !== 'manager');
+            
+            filteredUsers.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.email;
+                option.textContent = `${user.name} (${user.userType})`;
+                userFilter.appendChild(option);
+            });
+        }
+
+        // ==================== USER EDIT AND DELETE ====================
+        function editUser(userId) {
+            const user = allUsers.find(u => u.id == userId);
+            if (user) {
+                selectedUserId = userId;
+                document.getElementById('editUserId').value = userId;
+                document.getElementById('editUserEmail').value = user.email;
+                document.getElementById('editUserName').value = user.name;
+                document.getElementById('editUserType').value = user.userType;
+                document.getElementById('editUserPassword').value = '';
+                document.getElementById('confirmEditPassword').value = '';
+                
+                // ❌ إخفاء خيار المدير من القائمة
+                const userTypeSelect = document.getElementById('editUserType');
+                userTypeSelect.innerHTML = `
+                    <option value="employee">Employee</option>
+                    <option value="admin">Admin</option>
+                `;
+                userTypeSelect.value = user.userType;
+                
+                // ❌ إخفاء حقول كلمة السر للمدير
+                const passwordFields = document.getElementById('passwordFields');
+                if (user.userType === 'manager') {
+                    passwordFields.style.display = 'none';
+                } else {
+                    passwordFields.style.display = 'block';
+                }
+                
+                document.getElementById('editUserModal').style.display = 'flex';
+            }
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').style.display = 'none';
+            document.getElementById('editUserForm').reset();
+            document.getElementById('passwordFields').style.display = 'block';
+        }
+
+        function deleteUser(userId) {
+            const t = TRANSLATIONS[getCurrentLang()];
+            const user = allUsers.find(u => u.id == userId);
+            
+            if (!user) return;
+            
+            if (confirm(t.deleteUserConfirm)) {
+                const userIndex = allUsers.findIndex(u => u.id == userId);
+                if (userIndex > -1) {
+                    // Check if current user is trying to delete themselves
+                    if (user.email === currentUser.email) {
+                        showToast("Cannot delete your own account", "error");
+                        return;
+                    }
+                    
+                    allUsers.splice(userIndex, 1);
+                    localStorage.setItem('users', JSON.stringify(allUsers));
+                    
+                    // ✅ **إضافة إشعار للمدير**
+                    addNotification(
+                        'User Deleted by Admin',
+                        `Admin deleted user: ${user.name} (${user.email})`,
+                        'user',
+                        'Admin',
+                        null,
+                        'manager'
+                    );
+                    
+                    showToast(t.userDeleted, "success");
+                    loadAllUsers();
+                }
+            }
+        }
+
+        // Handle edit user form submission
+        document.getElementById('editUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveUserChanges();
+        });
+
+        function saveUserChanges() {
+            const t = TRANSLATIONS[getCurrentLang()];
+            const userId = document.getElementById('editUserId').value;
+            const userName = document.getElementById('editUserName').value.trim();
+            const userType = document.getElementById('editUserType').value;
+            const password = document.getElementById('editUserPassword').value;
+            const confirmPassword = document.getElementById('confirmEditPassword').value;
+            
+            const userIndex = allUsers.findIndex(u => u.id == userId);
+            if (userIndex > -1) {
+                const oldUser = {...allUsers[userIndex]};
+                
+                // Update user details
+                allUsers[userIndex].name = userName;
+                allUsers[userIndex].userType = userType;
+                
+                // ❌ لا يمكن تغيير كلمة سر المدير
+                if (oldUser.userType !== 'manager' && password) {
+                    if (password !== confirmPassword) {
+                        showToast(t.passwordsNotMatch, "error");
+                        return;
+                    }
+                    allUsers[userIndex].password = password;
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('users', JSON.stringify(allUsers));
+                
+                // ✅ **إضافة إشعار للمدير**
+                addNotification(
+                    'User Updated by Admin',
+                    `Admin updated user: ${oldUser.name} → ${userName}`,
+                    'user',
+                    'Admin',
+                    null,
+                    'manager'
+                );
+                
+                showToast(t.userUpdated, "success");
+                closeEditUserModal();
+                loadAllUsers();
+            }
+        }
+
+        // ==================== NEW TASK MANAGEMENT ====================
+        function openNewTaskModal() {
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            // Populate users dropdown (all users except current admin)
+            const userSelect = document.getElementById('newTaskAssignTo');
+            userSelect.innerHTML = '';
+            
+            // Add default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.textContent = "-- Select User --";
+            userSelect.appendChild(defaultOption);
+            
+            // Add all users (employees, managers, other admins)
+            allUsers.forEach(user => {
+                if (user.email !== currentUser.email) { // Exclude current admin
+                    const option = document.createElement('option');
+                    option.value = user.email;
+                    option.textContent = `${user.name} (${user.email}) - ${user.userType}`;
+                    userSelect.appendChild(option);
+                }
+            });
+            
+            // Set default dates
+            const today = new Date().toISOString().split('T')[0];
+            const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            
+            document.getElementById('newTaskStartDate').value = today;
+            document.getElementById('newTaskEndDate').value = nextWeek;
+            
+            // Reset form
+            document.getElementById('newTaskName').value = '';
+            document.getElementById('newTaskDescription').value = '';
+            document.getElementById('newTaskPriority').value = 'medium';
+            
+            // Clear uploaded files
+            newTaskUploadedFiles = [];
+            updateNewTaskUploadedFilesDisplay();
+            
+            // Show modal
+            document.getElementById('newTaskModal').style.display = 'flex';
+        }
+
+        function closeNewTaskModal() {
+            document.getElementById('newTaskModal').style.display = 'none';
+            document.getElementById('newTaskForm').reset();
+            newTaskUploadedFiles = [];
+            updateNewTaskUploadedFilesDisplay();
+        }
+
+        function assignNewTask() {
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            const title = document.getElementById('newTaskName').value.trim();
+            const description = document.getElementById('newTaskDescription').value.trim();
+            const assignToEmail = document.getElementById('newTaskAssignTo').value;
+            const priority = document.getElementById('newTaskPriority').value;
+            const startDate = document.getElementById('newTaskStartDate').value;
+            const endDate = document.getElementById('newTaskEndDate').value;
+            
+            if (!title || !description || !assignToEmail || !startDate || !endDate) {
+                showToast("Please fill all required fields", 'error');
+                return;
+            }
+            
+            const assignedToUser = allUsers.find(user => user.email === assignToEmail);
+            if (!assignedToUser) {
+                showToast('Selected user not found', 'error');
+                return;
+            }
+            
+            // Format dates
+            const formattedStartDate = new Date(startDate).toLocaleDateString();
+            const formattedEndDate = new Date(endDate).toLocaleDateString();
+            
+            // Prepare attachments from uploaded files
+            const attachments = newTaskUploadedFiles.map(file => ({
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                content: file.content || '' // In real app, you would upload file content
+            }));
+            
+            const newTask = {
+                id: Date.now().toString(),
+                title: title,
+                description: description,
+                assignedTo: assignedToUser.name,
+                assignedToEmail: assignedToUser.email,
+                assignedToType: assignedToUser.userType,
+                assignedBy: currentUser.name,
+                assignedByEmail: currentUser.email,
+                assignedByType: 'admin',
+                priority: priority,
+                status: 'pending',
+                startDate: formattedStartDate,
+                endDate: formattedEndDate,
+                createdAt: new Date().toISOString(),
+                progress: 0,
+                attachments: attachments
+            };
+            
+            // Add task to tasks array
+            allTasks.push(newTask);
+            
+            // Save to localStorage
+            localStorage.setItem('tasks', JSON.stringify(allTasks));
+            
+            // ✅ **إضافة المهمة إلى قسم Submitted Work كـ "new_task"**
+            const submission = {
+                id: Date.now().toString() + '_new',
+                taskId: newTask.id,
+                taskTitle: title,
+                employeeName: currentUser.name,
+                employeeEmail: currentUser.email,
+                assignedTo: assignedToUser.name,
+                assignedToEmail: assignedToUser.email,
+                assignedToType: assignedToUser.userType,
+                assignedBy: currentUser.name,
+                files: attachments,
+                comments: `New task assigned by ${currentUser.name}`,
+                status: 'pending',
+                submittedAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                type: 'new_task'
+            };
+            
+            submittedWork.push(submission);
+            localStorage.setItem('submittedWork', JSON.stringify(submittedWork));
+            
+            // Create notification for the assigned user
+            if (assignedToUser.userType === 'manager') {
+                addNotification(
+                    'New Task Assigned by Admin',
+                    `Admin ${currentUser.name} assigned you a new task: "${title}"`,
+                    'task',
+                    'Admin',
+                    newTask.id,
+                    'manager'
+                );
+            } else if (assignedToUser.userType === 'employee') {
+                addNotification(
+                    'New Task Assigned by Admin',
+                    `Admin ${currentUser.name} assigned you a new task: "${title}"`,
+                    'task',
+                    'Admin',
+                    newTask.id,
+                    assignedToUser.email
+                );
+            } else if (assignedToUser.userType === 'admin') {
+                addNotification(
+                    'New Task Assigned by Admin',
+                    `Admin ${currentUser.name} assigned you a new task: "${title}"`,
+                    'task',
+                    'Admin',
+                    newTask.id,
+                    assignedToUser.email
+                );
+            }
+            
+            // Also add to admin notifications
+            addNotification(
+                'Task Created',
+                `You assigned "${title}" to ${assignedToUser.name}`,
+                'task',
+                'System',
+                newTask.id,
+                currentUser.email
+            );
+            
+            showToast(t.taskAssigned, 'success');
+            closeNewTaskModal();
+            
+            // Reload data
+            loadAllTasks();
+            loadSubmittedWork();
+        }
+
+        // ==================== TASK REASSIGNMENT ====================
+        function openReassignModal(taskId) {
+            selectedTaskId = taskId;
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            // Populate users dropdown
+            const userSelect = document.getElementById('reassignToUser');
+            userSelect.innerHTML = '';
+            
+            // Get current task
+            const task = allTasks.find(t => t.id === taskId);
+            
+            // Add all users except current assigned user and current admin
+            allUsers.forEach(user => {
+                if (user.email !== task.assignedToEmail && user.email !== currentUser.email) {
+                    const option = document.createElement('option');
+                    option.value = user.email;
+                    option.textContent = `${user.name} (${user.email}) - ${user.userType}`;
+                    userSelect.appendChild(option);
+                }
+            });
+            
+            if (userSelect.options.length === 0) {
+                userSelect.innerHTML = `<option value="">No available users</option>`;
+                showToast(t.noUsersFound, 'warning');
+            } else {
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = "";
+                defaultOption.textContent = "-- Select User --";
+                userSelect.insertBefore(defaultOption, userSelect.firstChild);
+            }
+            
+            // Reset reason textarea
+            document.getElementById('reassignReason').value = '';
+            
+            // Show modal
+            document.getElementById('reassignModal').style.display = 'flex';
+        }
+
+        function closeReassignModal() {
+            document.getElementById('reassignModal').style.display = 'none';
+        }
+
+        function confirmReassignment() {
+            const t = TRANSLATIONS[getCurrentLang()];
+            const newUserEmail = document.getElementById('reassignToUser').value;
+            const reason = document.getElementById('reassignReason').value;
+            
+            if (!newUserEmail) {
+                showToast('Please select a user to reassign to', 'warning');
+                return;
+            }
+            
+            if (!selectedTaskId) {
+                showToast('No task selected', 'error');
+                return;
+            }
+            
+            const taskIndex = allTasks.findIndex(t => t.id === selectedTaskId);
+            if (taskIndex > -1) {
+                const newUser = allUsers.find(u => u.email === newUserEmail);
+                
+                if (!newUser) {
+                    showToast('Selected user not found', 'error');
+                    return;
+                }
+                
+                // ✅ **تأكيد إعادة التعيين**
+                if (!confirm(t.reassignConfirm)) {
+                    return;
+                }
+                
+                const oldTask = {...allTasks[taskIndex]};
+                
+                // Update task
+                allTasks[taskIndex].assignedTo = newUser.name;
+                allTasks[taskIndex].assignedToEmail = newUserEmail;
+                allTasks[taskIndex].assignedToType = newUser.userType;
+                allTasks[taskIndex].reassignedAt = new Date().toISOString();
+                allTasks[taskIndex].reassignmentReason = reason;
+                allTasks[taskIndex].reassignedBy = currentUser?.email || 'Admin';
+                
+                // Save to storage
+                localStorage.setItem('tasks', JSON.stringify(allTasks));
+                
+                // ✅ **إضافة المهمة إلى قسم Submitted Work كـ "reassigned"**
+                const reassignmentSubmission = {
+                    id: Date.now().toString() + '_reassign',
+                    taskId: selectedTaskId,
+                    taskTitle: allTasks[taskIndex].title,
+                    employeeName: currentUser.name,
+                    employeeEmail: currentUser.email,
+                    assignedTo: newUser.name,
+                    assignedToEmail: newUserEmail,
+                    assignedToType: newUser.userType,
+                    assignedBy: currentUser.name,
+                    files: oldTask.attachments || [],
+                    comments: `Task reassigned by ${currentUser.name} from ${oldTask.assignedTo} to ${newUser.name}. Reason: ${reason || 'No reason provided'}`,
+                    status: 'reassigned',
+                    submittedAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    type: 'reassignment'
+                };
+                
+                submittedWork.push(reassignmentSubmission);
+                localStorage.setItem('submittedWork', JSON.stringify(submittedWork));
+                
+                // ✅ **إضافة إشعار للمدير**
+                addNotification(
+                    'Task Reassigned by Admin',
+                    `Admin reassigned task "${allTasks[taskIndex].title}" from ${oldTask.assignedTo} to ${newUser.name}`,
+                    'task',
+                    'Admin',
+                    selectedTaskId,
+                    'manager'
+                );
+                
+                // Also notify the new assigned user
+                if (newUser.userType === 'manager') {
+                    addNotification(
+                        'Task Reassigned to You',
+                        `Admin reassigned task "${allTasks[taskIndex].title}" to you`,
+                        'task',
+                        'Admin',
+                        selectedTaskId,
+                        'manager'
+                    );
+                } else {
+                    addNotification(
+                        'Task Reassigned to You',
+                        `Admin reassigned task "${allTasks[taskIndex].title}" to you`,
+                        'task',
+                        'Admin',
+                        selectedTaskId,
+                        newUserEmail
+                    );
+                }
+                
+                showToast(t.taskReassigned, 'success');
+                closeReassignModal();
+                closeTaskModal();
+                loadAllTasks();
+                loadSubmittedWork();
+            }
+        }
+
+        // ==================== TASK STATUS UPDATE ====================
+        function updateTaskStatusFromAdmin(taskId, newStatus) {
+            const taskIndex = allTasks.findIndex(t => t.id === taskId);
+            if (taskIndex > -1) {
+                const task = allTasks[taskIndex];
+                const oldStatus = task.status;
+                task.status = newStatus;
+                
+                // Update progress based on status
+                if (newStatus === 'completed') {
+                    task.progress = 100;
+                } else if (newStatus === 'in-progress') {
+                    task.progress = 50;
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('tasks', JSON.stringify(allTasks));
+                
+                // ✅ **إضافة إشعار للمدير**
+                addNotification(
+                    'Task Status Updated by Admin',
+                    `Admin updated task "${task.title}" from ${oldStatus} to ${newStatus}`,
+                    'status',
+                    'Admin',
+                    taskId,
+                    'manager'
+                );
+                
+                // Reload data
+                loadAllTasks();
+                
+                return true;
+            }
+            return false;
+        }
+
+        function updateTaskStatusInAdmin(taskId, newStatus) {
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            if (updateTaskStatusFromAdmin(taskId, newStatus)) {
+                closeTaskModal();
+                showToast(`${t.taskStatusUpdated}: ${newStatus}`, 'success');
+            }
+        }
+
+        // ==================== FILE MANAGEMENT ====================
+        function openFile(fileName, fileContent) {
+            const t = TRANSLATIONS[getCurrentLang()];
+            showToast(t.fileOpening, 'info');
+            
+            // محاكاة فتح الملف تلقائياً
+            const link = document.createElement('a');
+            link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`File: ${fileName}\nContent: ${fileContent || 'Sample content'}`);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => {
+                showToast(t.fileDownloaded, 'success');
+            }, 1000);
+        }
+
+        // ==================== SUBMISSION MANAGEMENT ====================
+        function deleteSubmissionFromTable(submissionId) {
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            if (!confirm(t.deleteConfirm)) {
+                return;
+            }
+            
+            const submissionIndex = submittedWork.findIndex(s => s.id === submissionId);
+            if (submissionIndex > -1) {
+                submittedWork.splice(submissionIndex, 1);
+                localStorage.setItem('submittedWork', JSON.stringify(submittedWork));
+                
+                showToast(t.submissionDeleted, 'success');
+                loadSubmittedWork();
+            }
+        }
+
+        function deleteSubmission() {
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            if (!selectedSubmissionId) {
+                showToast('No submission selected', 'error');
+                return;
+            }
+            
+            if (!confirm(t.deleteConfirm)) {
+                return;
+            }
+            
+            const submissionIndex = submittedWork.findIndex(s => s.id === selectedSubmissionId);
+            if (submissionIndex > -1) {
+                submittedWork.splice(submissionIndex, 1);
+                localStorage.setItem('submittedWork', JSON.stringify(submittedWork));
+                
+                showToast(t.submissionDeleted, 'success');
+                closeSubmissionModal();
+                loadSubmittedWork();
+            }
+        }
+
+        // ==================== TASK MANAGEMENT ====================
+        function deleteTask(taskId) {
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            if (!confirm(t.deleteConfirm)) {
+                return;
+            }
+            
+            const taskIndex = allTasks.findIndex(t => t.id === taskId);
+            if (taskIndex > -1) {
+                allTasks.splice(taskIndex, 1);
+                localStorage.setItem('tasks', JSON.stringify(allTasks));
+                
+                showToast(t.taskDeleted, 'success');
+                loadAllTasks();
+            }
+        }
+
+        // ==================== MODAL FUNCTIONS ====================
+        function viewTaskDetails(taskId) {
+            selectedTaskId = taskId;
+            const task = allTasks.find(t => t.id === taskId);
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            if (task) {
+                document.getElementById('modalTaskTitle').textContent = task.title;
+                document.getElementById('modalTaskDescription').textContent = task.description;
+                document.getElementById('modalTaskManager').textContent = task.assignedBy;
+                document.getElementById('modalTaskEmployee').textContent = task.assignedTo;
+                document.getElementById('modalTaskStartDate').textContent = task.startDate;
+                document.getElementById('modalTaskEndDate').textContent = task.endDate;
+                document.getElementById('modalTaskPriority').textContent = t[`priority${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}`];
+                document.getElementById('modalTaskStatus').textContent = t[`status${task.status.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('')}`];
+                document.getElementById('modalTaskProgress').textContent = `${task.progress || 0}%`;
+                
+                // Load attachments
+                const attachmentsGrid = document.getElementById('modalAttachments');
+                attachmentsGrid.innerHTML = '';
+                
+                if (task.attachments && task.attachments.length > 0) {
+                    task.attachments.forEach(attachment => {
+                        const attachmentItem = document.createElement('div');
+                        attachmentItem.className = 'attachment-item';
+                        attachmentItem.onclick = () => openFile(attachment.name, attachment.content || '');
+                        attachmentItem.innerHTML = `
+                            <div class="attachment-icon">
+                                <i class="fas fa-file"></i>
+                            </div>
+                            <div class="attachment-name">${attachment.name}</div>
+                            <div class="attachment-size">${attachment.size}</div>
+                        `;
+                        attachmentsGrid.appendChild(attachmentItem);
+                    });
+                } else {
+                    attachmentsGrid.innerHTML = `<div style="text-align: center; padding: 20px; color: #64748b;">No attachments</div>`;
+                }
+                
+                // Add status update buttons
+                const statusButtons = document.getElementById('statusUpdateButtons');
+                statusButtons.innerHTML = `
+                    <h3>Update Status</h3>
+                    <div class="status-update-buttons">
+                        <button class="status-btn pending" onclick="updateTaskStatusInAdmin('${taskId}', 'pending')">
+                            ${t.statusPending}
+                        </button>
+                        <button class="status-btn in-progress" onclick="updateTaskStatusInAdmin('${taskId}', 'in-progress')">
+                            ${t.statusInProgress}
+                        </button>
+                        <button class="status-btn completed" onclick="updateTaskStatusInAdmin('${taskId}', 'completed')">
+                            ${t.statusCompleted}
+                        </button>
+                        <button class="status-btn under-review" onclick="updateTaskStatusInAdmin('${taskId}', 'under-review')">
+                            ${t.statusUnderReview}
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('taskModal').style.display = 'flex';
+            }
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').style.display = 'none';
+        }
+
+        function viewSubmissionDetails(submissionId) {
+            selectedSubmissionId = submissionId;
+            const submission = submittedWork.find(s => s.id === submissionId);
+            const t = TRANSLATIONS[getCurrentLang()];
+            
+            if (submission) {
+                document.getElementById('modalSubmissionTitle').textContent = `Submission: ${submission.taskTitle}`;
+                document.getElementById('modalSubmissionTask').textContent = submission.taskTitle;
+                document.getElementById('modalSubmissionBy').textContent = submission.employeeName;
+                document.getElementById('modalSubmissionTo').textContent = submission.assignedTo;
+                document.getElementById('modalSubmissionDate').textContent = new Date(submission.submittedAt).toLocaleString();
+                document.getElementById('modalSubmissionComments').textContent = submission.comments || 'No comments';
+                
+                // Load submission files
+                const filesContainer = document.getElementById('modalSubmissionFiles');
+                filesContainer.innerHTML = '';
+                
+                if (submission.files && submission.files.length > 0) {
+                    submission.files.forEach(file => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.onclick = () => openFile(file.name, file.content || '');
+                        fileItem.innerHTML = `
+                            <i class="fas fa-file"></i>
+                            <span>${file.name}</span>
+                            <small>(${file.size})</small>
+                        `;
+                        filesContainer.appendChild(fileItem);
+                    });
+                }
+                
+                // Load attachments
+                const attachmentsGrid = document.getElementById('modalSubmissionAttachments');
+                attachmentsGrid.innerHTML = '';
+                
+                if (submission.files && submission.files.length > 0) {
+                    submission.files.forEach(file => {
+                        const attachmentItem = document.createElement('div');
+                        attachmentItem.className = 'attachment-item';
+                        attachmentItem.onclick = () => openFile(file.name, file.content || '');
+                        attachmentItem.innerHTML = `
+                            <div class="attachment-icon">
+                                <i class="fas fa-file"></i>
+                            </div>
+                            <div class="attachment-name">${file.name}</div>
+                            <div class="attachment-size">${file.size}</div>
+                        `;
+                        attachmentsGrid.appendChild(attachmentItem);
+                    });
+                } else {
+                    attachmentsGrid.innerHTML = `<div style="text-align: center; padding: 20px; color: #64748b;">No files attached</div>`;
+                }
+                
+                document.getElementById('submissionModal').style.display = 'flex';
+            }
+        }
+
+        function closeSubmissionModal() {
+            document.getElementById('submissionModal').style.display = 'none';
+        }
+
+        function downloadSubmission() {
+            const t = TRANSLATIONS[getCurrentLang()];
+            const submission = submittedWork.find(s => s.id === selectedSubmissionId);
+            
+            if (submission && submission.files && submission.files.length > 0) {
+                // محاكاة تحميل جميع الملفات
+                submission.files.forEach(file => {
+                    openFile(file.name, file.content || '');
+                });
+                showToast(`${t.submissionDownloaded}: ${submission.files.length} files`, 'success');
+            } else {
+                showToast('No files to download', 'warning');
+            }
+        }
+
+        // ==================== NOTIFICATION SYSTEM ====================
+        function addNotification(title, message, type, from, taskId = null, targetUserType = 'manager') {
+            const notification = {
+                id: Date.now().toString(),
+                title: title,
+                message: message,
+                type: type,
+                from: from,
+                managerEmail: targetUserType === 'manager' ? getManagerEmail() : null,
+                adminEmail: targetUserType === 'admin' ? getAdminEmail() : null,
+                employeeEmail: targetUserType !== 'manager' && targetUserType !== 'admin' ? targetUserType : null,
+                taskId: taskId,
+                timestamp: new Date().toISOString(),
+                read: false
+            };
+            
+            // Get existing notifications
+            let allNotifications = JSON.parse(localStorage.getItem('notifications')) || [];
+            
+            // Add new notification
+            allNotifications.push(notification);
+            
+            // Save to localStorage
+            localStorage.setItem('notifications', JSON.stringify(allNotifications));
+            
+            console.log('📢 Notification added:', notification.title);
+            
+            return notification.id;
+        }
+
+        function getManagerEmail() {
+            // الحصول على بريد المدير الأول من النظام
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const manager = users.find(u => u.userType === 'manager');
+            return manager ? manager.email : null;
+        }
+
+        function getAdminEmail() {
+            return currentUser ? currentUser.email : null;
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function updateStats() {
+            const t = TRANSLATIONS[getCurrentLang()];
+            document.getElementById('totalTasksCount').textContent = allTasks.length;
+            
+            const inProgressCount = allTasks.filter(task => task.status === 'in-progress').length;
+            document.getElementById('tasksInProgress').textContent = `${inProgressCount} ${t.tasksInProgress}`;
+        }
+
+        function showToast(message, type = 'info') {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+            
+            // Create toast
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                'success': 'check-circle',
+                'error': 'exclamation-circle',
+                'warning': 'exclamation-triangle',
+                'info': 'info-circle'
+            };
+            
+            toast.innerHTML = `<i class="fas fa-${icons[type]}"></i><span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.style.animation = document.documentElement.dir === 'rtl' 
+                    ? 'toastSlideInRTL 0.3s ease reverse' 
+                    : 'toastSlideIn 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function logout() {
+            const t = TRANSLATIONS[getCurrentLang()];
+            if (confirm(t.logoutConfirm)) {
+                // مسح بيانات الأدمن من الذاكرة
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('adminOriginalName');
+                localStorage.removeItem('adminEmail');
+                
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = ['taskModal', 'reassignModal', 'submissionModal', 'editUserModal', 'newTaskModal'];
+            modals.forEach(modalId => {
+                if (event.target === document.getElementById(modalId)) {
+                    document.getElementById(modalId).style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
